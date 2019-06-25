@@ -1,0 +1,26 @@
+kind: ValidatingWebhookConfiguration
+apiVersion: admissionregistration.k8s.io/v1beta1
+metadata:
+  name: 187-pod-killer
+  annotations:
+    certmanager.k8s.io/inject-ca-from: "default/ca"
+webhooks:
+  - name: validating-webhook.openpolicyagent.org
+    namespaceSelector:
+      matchExpressions:
+      - key: openpolicyagent.org/webhook
+        operator: NotIn
+        values:
+        - ignore
+    rules:
+      - operations:
+          - CONNECT
+        apiGroups: ["*"]
+        apiVersions: ["v1"]
+        resources: ["pods/exec"]
+    sideEffects: "NoneOnDryRun"
+    clientConfig:
+      caBundle: ""
+      service:
+        namespace: "default"
+        name: "webhook-187"

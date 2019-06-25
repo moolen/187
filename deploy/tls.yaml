@@ -1,0 +1,40 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: selfsigning-issuer
+spec:
+  selfSigned: {}
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: ca
+spec:
+  secretName: ca-tls
+  commonName: "ca"
+  isCA: true
+  issuerRef:
+    name: selfsigning-issuer
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Issuer
+metadata:
+  name: ca-issuer
+spec:
+  ca:
+    secretName: ca-tls
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: server
+spec:
+  secretName: server-tls
+  issuerRef:
+    name: ca-issuer
+  dnsNames:
+  - "localhost"
+  - "webhook-187.default.svc"
+  - "webhook-187.default"
+  ipAddresses:
+  - "127.0.0.1"

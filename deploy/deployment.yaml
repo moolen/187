@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "187"
+spec:
+  selector:
+    matchLabels:
+      app: "187"
+  template:
+    metadata:
+      labels:
+        app: "187"
+    spec:
+      serviceAccount: "187"
+      containers:
+      - name: "187"
+        image: moolen/187:latest
+        imagePullPolicy: Always
+        command:
+        - /webhook
+        env:
+        - name: TLS_CERT
+          value: /certs/tls.crt
+        - name: TLS_KEY
+          value: /certs/tls.key
+        - name: GRACE_PERIOD
+          value: 30s
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - readOnly: true
+          name: tls
+          mountPath: /certs
+      volumes:
+      - name: tls
+        secret:
+          secretName: server-tls

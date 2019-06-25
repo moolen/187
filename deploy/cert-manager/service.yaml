@@ -1,0 +1,16 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cert-manager-webhook
+  namespace: "cert-manager"
+  labels:
+    app: webhook
+spec:
+  type: ClusterIP
+  ports:
+  - name: https
+    port: 443
+    targetPort: 6443
+  selector:
+    app: webhook
